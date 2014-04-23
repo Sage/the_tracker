@@ -1,3 +1,7 @@
+[![Gem Version](https://badge.fury.io/rb/the_tracker.svg)](http://badge.fury.io/rb/the_tracker)
+
+Simple way to add Google analytics, universal analytics, uservoice to your rails app
+
 # TheTracker
 
 A Gem to help you add tracker components to your application.  Instead of having to write javascript code to add this trackers you can use plain pure ruby.
@@ -5,6 +9,8 @@ A Gem to help you add tracker components to your application.  Instead of having
 Currently this components are supported:
 
   Google Analytics
+
+  Google Universal Analytics
 
   Google Tag Mangaer
 
@@ -17,6 +23,8 @@ Currently this components are supported:
   Kenshoo Conversion Pixel
 
   Relevant Traffic Conversion Pixel
+
+  YD RTB Pixel
 
 ## Installation
 
@@ -49,7 +57,7 @@ In your views add
       <%= header_tracking_code.html_safe %>
     </header>
 
-If you want to add some trackers in the body you can add:
+If the tracker needs to add code into the body:
 
     <body>
       <%= body_top_tracking_code.html_safe %>
@@ -59,111 +67,29 @@ If you want to add some trackers in the body you can add:
       <%= body_bottom_tracking_code.html_safe %>
     </body>
 
-And that's all the tracking code will be added automatically
+And that's all, the tracking code will be added automatically
 
 Sometimes you only want to track certain pages:
 
-For instance, this example will not show the Google Analytics code if `some_condition` evaluates to true
+For instance, this example will show the Google Analytics code only if `some_condition` evaluates to true
 
     <header>
       <% TheTracker::Tracker.instance.trackers[:ganalytics].active = some_condition %>
       <%= header_tracking_code.html_safe %>
     </header>
 
-You can add a tracking code only once:
+You can add a tracking code on a single page:
 
     TheTracker::Tracker.config do |tmf|
       tmf.add_once TheTracker::Trackers::Uservoice.new('YOUR_KEY', {:forum_id => 123, :tab_label => 'Say Hi and disappear!'})
     end
+    
+For more examples please visit [how to use it](https://github.com/jorgegorka/the_tracker/wiki/Usage)
 
+## [Documentation](https://github.com/jorgegorka/the_tracker/wiki)
 
-## Available Trackers
+Read the documentation to find details about how to implement each pixel available.
 
-### AdFrom
-
-      TheTracker::Trackers::AdForm.new(:pm => 123, :id => 444)
-
-### Uservoice
-
-      TheTracker::Trackers::Uservoice.new(
-        'THE_KEY',
-        {
-        mode: 'full',
-        primary_color: '#ff0000',
-        link_color: '#007dbf',
-        default_mode: 'support',
-        forum_id: 111,
-        tab_label: 'Say Hi!',
-        tab_color: '#cc0000',
-        tab_position: 'middle-left',
-        tab_inverted: true
-        }
-      )
-
-### Google Analytics
-
-#### Regular tracking code
-      TheTracker::Trackers::GAnalytics.new(:id => 'UA-111111-11')
-
-You can optionally set domain name and allow linker
-
-      TheTracker::Trackers::GAnalytics.new(:id => 'UA-111111-11', :domain_name => 'mydomain.com', :allow_linker => true)
-
-#### Add an e-commerce transaction
-      TheTracker::Tracker.instance.trackers[:ganalytics].add_transaction(tid=0, store='', total=0, tax=0, shipping=0, city='', state='', country='')
-
-Yo don't need to specify an id.  If id is zero the transaction id will be the current timestamp
-
-To add items to the transaction:
-
-      TheTracker::Tracker.instance.trackers[:ganalytics].add_transaction_item(sku='', product='', category='', price=0, quantity=0)
-
-#### Add custom vars
-
-      TheTracker::Tracker.instance.trackers[:ganalytics].add_custom_var(index, name, value, scope)
-
-#### Track an event
-
-      TheTracker::Tracker.instance.trackers[:ganalytics].track_event(category, action, label='', value=0, non_interactive=false)
-
-### Google Tag Manager
-
-      TheTracker::Trackers::Gtm.new(:gtmid => 'GTM-111111')
-
-To add [dataLayer variables to GTM](https://developers.google.com/tag-manager/devguide)
-
-      TheTracker::Tracker.instance.trackers[:gtm].add_data_layer(name, value)
-
-### Google AdServices
-
-      TheTracker::Trackers::GAdServices.new(
-        id: 'UA-111111-11'
-        language: 'en',
-        format: '1',
-        color: 'ffffff',
-        label: 'qwerty',
-        value: '0'
-      )
-
-### Kenshoo Conversion Pixel
-
-      TheTracker::Trackers::Kenshoo.new(
-        token: '999'
-        type: 'conv',
-        val: '0',
-        orderId: '88988',
-        promoCode: 'easter',
-        valueCurrency: 'EUR',
-        trackEvent: '1234'
-      )
-
-### Relevant Traffic Conversion Pixel
-
-      TheTracker::Trackers::Relevant.new(
-        token: '4329847'
-        seg: '289347',
-        orderId: '88AB988'
-      )
 
 ## Author
 
@@ -183,7 +109,35 @@ To add [dataLayer variables to GTM](https://developers.google.com/tag-manager/de
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+## License
+
+The Tracker is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+
 ## Log
+
+### Version 1.3.1
+
+Fixed gem generation problem
+
+### Version 1.3.0
+
+YD RTB support
+
+### Version 1.2.3
+
+Fixed bug with namespace
+
+### Version 1.2.2
+
+Support for more than one Universal analytics account
+
+### Version 1.2.1
+
+Support for userId in Universal analytics
+
+### Version 1.2.0
+
+Added Universal analytics
 
 ### Version 1.1.2
 
