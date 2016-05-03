@@ -1,11 +1,15 @@
+require 'json'
+
 module TheTracker
   module Trackers
     class Uservoice < Base
-      require 'json'
+
+      attr_reader :hide_tab
 
       # AdForm info pm and id
       def initialize(key_file, options)
         @options  = options
+        @hide_tab = options.delete(:hide_tab) || false
         @key_file = key_file
         super()
       end
@@ -24,7 +28,7 @@ module TheTracker
       end
 
       def body_bottom
-        return if !active
+        return if !active or hide_tab
         <<-EOF
           <script type="text/javascript">
           UserVoice = window.UserVoice || [];
@@ -34,6 +38,7 @@ module TheTracker
           </script>
         EOF
       end
+
     end
   end
 end
