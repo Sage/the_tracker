@@ -2,7 +2,9 @@ require 'the_tracker'
 
 class TheTracker::Tracker
   def self.reset
-    self.instance.instance_variable_set(:@trackers, {})
+    %i[@one_time_trackers  @regular_trackers @trackers].each do |var|
+      self.instance.instance_variable_set(var, {})
+    end
   end
 end
 
@@ -13,3 +15,5 @@ RSpec.configure do |config|
   config.order = 'random'
   config.before { TheTracker::Tracker.reset }
 end
+
+require 'pry'

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe TheTracker::Trackers::GAnalytics do
  subject { described_class.new(:id => 'UA-111-11') }
 
-  describe :initialize do
+  describe "initialize" do
     before :each do
       @ga = described_class.new(
         id: 111,
@@ -13,53 +13,53 @@ describe TheTracker::Trackers::GAnalytics do
     end
 
     it 'should return domain name content' do
-      @ga.header.should include("_gaq.push(['_setDomainName', 'test.com']);")
+      expect(@ga.header).to include("_gaq.push(['_setDomainName', 'test.com']);")
     end
 
     it 'should return allow linker name content' do
-      @ga.header.should include("_gaq.push(['_setAllowLinker', true]);")
+      expect(@ga.header).to include("_gaq.push(['_setAllowLinker', true]);")
     end
   end
 
-  describe :methods do
-    describe :add_custom_var do
+  describe "methods" do
+    describe "add_custom_var" do
       it 'should add a custom var' do
         subject.add_custom_var(1, 'user', '111', 1)
-        subject.header.should include("_gaq.push(['_setCustomVar', 1, 'user', '111', '1']);")
+        expect(subject.header).to include("_gaq.push(['_setCustomVar', 1, 'user', '111', '1']);")
       end
     end
 
-    describe :track_event do
+    describe "track_event" do
       it 'should add the event tag' do
-        subject.track_event('Category', 'Action', "label\'s", '99', true).should == "_gaq.push(['_trackEvent', 'Category', 'Action', 'label\'s', 99, true]);"
+        expect(subject.track_event('Category', 'Action', "label\'s", '99', true)).to eq("_gaq.push(['_trackEvent', 'Category', 'Action', 'label\'s', 99, true]);")
       end
     end
 
-    describe :transactions do
+    describe "transactions" do
       before :each do
         subject.add_transaction('1234', 'Acme Clothing', '11.99', '1.29', '5', 'San Jose', 'California', 'USA')
         subject.add_transaction_item('DD44', 'T-Shirt', 'Green Medium', '11.99', '1')
       end
 
-      describe :add_transaction do
+      describe "add_transaction" do
         it 'should add the transaction tag' do
-          subject.header.should include("_gaq.push(['_addTrans'")
+          expect(subject.header).to include("_gaq.push(['_addTrans'")
         end
 
         it 'should add the transaction tag but only once' do
           subject.header
-          subject.header.should_not include("_gaq.push(['_addTrans'")
+          expect(subject.header).not_to include("_gaq.push(['_addTrans'")
         end
       end
 
-      describe :add_transaction_item do
+      describe "add_transaction_item" do
         it 'should add the transaction_item tag' do
-          subject.header.should include("_gaq.push(['_addItem'")
+          expect(subject.header).to include("_gaq.push(['_addItem'")
         end
       end
 
       it 'should add the tracker of the transaction' do
-        subject.header.should include("_gaq.push(['_trackTrans']);")
+        expect(subject.header).to include("_gaq.push(['_trackTrans']);")
       end
 
       context 'if transaction id is nil' do
@@ -69,29 +69,29 @@ describe TheTracker::Trackers::GAnalytics do
 
         it 'should add default timestamp as transaction id when zero' do
           @default.add_transaction(0, 'Acme Clothing', '11.99', '1.29', '5', 'San Jose', 'California', 'USA')
-          @default.header.should =~ /_gaq.push\(\['_addTrans', '\d{2,}'/
+          expect(@default.header).to match(/_gaq.push\(\['_addTrans', '\d{2,}'/)
         end
 
         it 'should add default timestamp as transaction id when nil' do
           @default.add_transaction(nil, 'Acme Clothing', '11.99', '1.29', '5', 'San Jose', 'California', 'USA')
-          @default.header.should =~ /_gaq.push\(\['_addTrans', '\d{2,}'/
+          expect(@default.header).to match(/_gaq.push\(\['_addTrans', '\d{2,}'/)
         end
       end
     end
 
-    describe :header do
+    describe "header" do
       it 'should return analytics content' do
-        subject.header.should include("_gaq.push(['_trackPageview']);")
+        expect(subject.header).to include("_gaq.push(['_trackPageview']);")
       end
 
       it 'should include ua information' do
-        subject.header.should include("_gaq.push(['_setAccount', 'UA-111-11']);")
+        expect(subject.header).to include("_gaq.push(['_setAccount', 'UA-111-11']);")
       end
     end
 
-    describe :name do
+    describe "name" do
       it 'should return ganalytics' do
-        subject.name.should == :ganalytics
+        expect(subject.name).to eq(:ganalytics)
       end
     end
   end
