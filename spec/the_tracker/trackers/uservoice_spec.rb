@@ -24,6 +24,11 @@ describe TheTracker::Trackers::Uservoice do
         expect(subject.body_bottom).to include('"forum_id":"111"')
         expect(subject.body_bottom).to include('"tab_label":"Say Hi!"')
       end
+
+      it 'returns nothing if tracker is initialized with a :hide_tab => true option' do
+        tracker = described_class.new('abcd', {:forum_id => '111', :tab_label => 'Say Hi!', :hide_tab => true })
+        expect(tracker.body_bottom).to be_nil
+      end
     end
   end
 end
